@@ -161,7 +161,7 @@ double molecule::analytical_force(double r_ij){
 
         double r_7 = pow((sigma_AuAu / r_ij), 7);
         double r_13 = pow((sigma_AuAu / r_ij), 13);
-        double analytical_force = 12 * epsilon_AuAu * (1/sigma_AuAu * r_7 - 1/sigma_AuAu * r_13);
+        double analytical_force = 24 * epsilon_AuAu / sigma_AuAu * (r_7 - 2 * r_13);
 
         return analytical_force;
     }
@@ -209,11 +209,11 @@ double molecule::forward_difference_total(Coordinates coordinates, int num_atoms
 }
 
 // Define a function to calculate the forward difference truncation error between all pairs of atoms
-// d2Eij/drij2 = 12εij/(σij^2) * [13 * (σij/rij)^14 - 7 * (σij/rij)^8]
+// d2Eij/drij2 = 24εij/(σij^2) * [26 * (σij/rij)^14 - 7 * (σij/rij)^8]
 // et ~ 1/2 * h * d2Eij/drij2
 double molecule::forward_difference_truncation_error(double r_ij, double h){
             
-            double epsilon_Au = 5.29;
+            double epsilon_Au = 22.13;
             double sigma_Au = 2.951;
             
             double epsilon_AuAu = sqrt(epsilon_Au * epsilon_Au);
@@ -221,7 +221,7 @@ double molecule::forward_difference_truncation_error(double r_ij, double h){
     
             double r_8 = pow((sigma_AuAu / r_ij), 8);
             double r_14 = pow((sigma_AuAu / r_ij), 14);
-            double derivative_2 = 12.0 * epsilon_AuAu/(sigma_AuAu * sigma_AuAu) * (13.0 * r_14 - 7.0 * r_8);
+            double derivative_2 = 24.0 * epsilon_AuAu/(sigma_AuAu * sigma_AuAu) * (26.0 * r_14 - 7.0 * r_8);
             double forward_difference_truncation_error = 0.5 * h * derivative_2;
     
             return forward_difference_truncation_error;
@@ -267,11 +267,11 @@ double molecule::central_difference_total(Coordinates coordinates, int num_atoms
 }
 
 // Define a function to calculate the central difference truncation error
-// d3Eij/drij3 = 84εij/(σij^3) * [-26 * (σij/rij)^15 + 8 * (σij/rij)^9]
+// d3Eij/drij3 = 336εij/(σij^3) * [-26 * (σij/rij)^15 + 4 * (σij/rij)^9]
 // et ~ -1/6 * h^2 * d3Eij/drij3
 double molecule::central_difference_truncation_error(double r_ij, double h){
             
-            double epsilon_Au = 5.29;
+            double epsilon_Au = 22.13;
             double sigma_Au = 2.951;
             
             double epsilon_AuAu = sqrt(epsilon_Au * epsilon_Au);
@@ -279,7 +279,7 @@ double molecule::central_difference_truncation_error(double r_ij, double h){
     
             double r_9 = pow((sigma_AuAu / r_ij), 9);
             double r_15 = pow((sigma_AuAu / r_ij), 15);
-            double derivative_3 = 84.0 * epsilon_AuAu/(sigma_AuAu * sigma_AuAu * sigma_AuAu) * (-26.0 * r_15 + 8.0 * r_9);
+            double derivative_3 = 336.0 * epsilon_AuAu/(sigma_AuAu * sigma_AuAu * sigma_AuAu) * (4.0 * r_9 - 26.0 * r_15);
             double central_difference_truncation_error = 1.0/6.0 * h * h * derivative_3;
     
             return central_difference_truncation_error;
